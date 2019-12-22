@@ -29,9 +29,9 @@ public class GameEngine {
 		grid.setGrid(sudoku);
 	}
 	
-	public void createGrid(){
+	public void createGrid(String level){
 		int[][] sudoku = SudokuGenerator.getInstance().generateGrid();
-		sudoku = SudokuGenerator.getInstance().removeElements(sudoku);
+		sudoku = SudokuGenerator.getInstance().removeElements(sudoku, level);
 		grid.setGrid(sudoku);
 	}
 	

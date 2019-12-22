@@ -2,6 +2,8 @@ package com.example.sudokutest;
 
 import android.util.Log;
 
+import java.util.List;
+
 public class SudokuChecker {
 	private static SudokuChecker instance;
 	
@@ -14,56 +16,11 @@ public class SudokuChecker {
 		return instance;
 	}
 
-	public void autoSolver(int[][] sudoku) {
-		for(int y=0 ; y<9 ; y++){
-			for(int x=0 ; x<9 ; x++) {
-				if (sudoku[x][y] == 0) {
-					Log.d("CEK", "CEK AutoSolver Posisi Kosong "+x+" "+y);
-					for (int i=1 ; i<=9 ; i++) {
-						if (fillBlankCheckComplete(sudoku, x, y, i)){
-							GameEngine.getInstance().setSelectedPosition(x, y);
-							GameEngine.getInstance().setNumber(i);
-							Log.d("CEK", "CEK AutoSolver Sama nih "+i);
-						}
-					}
-				}
-			}
+	public void autoSolver(List<Integer> emptyX, List<Integer> emptyY, List<Integer> valueXY) {
+		for (int i=0 ; i<emptyX.size() ; i++) {
+			GameEngine.getInstance().setSelectedPosition(emptyX.get(i), emptyY.get(i));
+			GameEngine.getInstance().setNumber(valueXY.get(i));
 		}
-	}
-
-	private boolean fillBlankCheckComplete(int[][] sudoku, int posOfX, int posOfy, int number) {
-		return !fillBlankCheckColumn(sudoku, posOfX, number) && !fillBlankCheckRow(sudoku, posOfy, number)
-				&& !fillBlankCheckRegion(sudoku, posOfX, posOfy, number);
-	}
-
-	private boolean fillBlankCheckColumn(int[][] sudoku, int posOfX, int number) {
-		for (int y=0 ;y<9 ; y++) {
-			if (sudoku[posOfX][y] == number)
-				return true;
-		}
-
-		return false;
-	}
-
-	private boolean fillBlankCheckRow(int[][] sudoku, int posOfY, int number) {
-		for (int x=0 ;x<9 ; x++) {
-			if (sudoku[x][posOfY] == number)
-				return true;
-		}
-
-		return false;
-	}
-
-	private boolean fillBlankCheckRegion(int[][] sudoku, int posOfX, int posOfY, int number) {
-		int r = posOfY - (posOfY%3);
-		int c = posOfX - (posOfX%3);
-
-		for (int i = c; i < r + 3; i++)
-			for (int j = r; j < c + 3; j++)
-				if (sudoku[i][j] == number)
-					return true;
-
-		return false;
 	}
 
 	public boolean checkSudoku(int[][] sudoku){

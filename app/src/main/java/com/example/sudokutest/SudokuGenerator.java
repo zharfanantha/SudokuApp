@@ -1,10 +1,16 @@
 package com.example.sudokutest;
 
+import android.util.Log;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class SudokuGenerator {
 	private static SudokuGenerator instance;
+	private List<Integer> posisiX = new ArrayList<>();
+	private List<Integer> posisiY = new ArrayList<>();
+	private List<Integer> valueXY = new ArrayList<>();
 
 	//variabel penampung angka yg tersedia
 	private ArrayList<ArrayList<Integer>> availableNumber = new ArrayList<ArrayList<Integer>>();
@@ -42,6 +48,7 @@ public class SudokuGenerator {
 					int yPos = currentPos/9;
 
 					sudoku[xPos][yPos] = number;
+					Log.d("Cek", "Posisi X "+xPos+" Y "+yPos+" value "+number);
 					availableNumber.get(currentPos).remove(i);
 					currentPos++;
 				} else {
@@ -57,25 +64,52 @@ public class SudokuGenerator {
 		return sudoku;
 	}
 	
-	public int[][] removeElements(int[][] sudoku) {
+	public int[][] removeElements(int[][] sudoku, String level) {
 		int i = 0;
-		int emptyField;
-		int min = COUNTED_ROW/9;
-		int max = COUNTED_ROW/4;
-		emptyField = rand.nextInt((max-min) + 1) + min;
+		int emptyField = 0;
+
+		if (level.equalsIgnoreCase("easy")) {
+			int min = COUNTED_ROW/9;
+			int max = COUNTED_ROW/4;
+			emptyField = rand.nextInt((max-min) + 1) + min;
+		} else if (level.equalsIgnoreCase("med")) {
+			int min = COUNTED_ROW/6;
+			int max = COUNTED_ROW/3;
+			emptyField = rand.nextInt((max-min) + 1) + min;
+		} else if (level.equalsIgnoreCase("hard")) {
+			int min = COUNTED_ROW/3;
+			int max = COUNTED_ROW/2;
+			emptyField = rand.nextInt((max-min) + 1) + min;
+		}
 
 		while(i < emptyField) {
 			int x = rand.nextInt(9);
 			int y = rand.nextInt(9);
 			
 			if(sudoku[x][y] != 0){
+				posisiX.add(x);
+				posisiY.add(y);
+				valueXY.add(sudoku[x][y]);
+				Log.d("Cek", "Posisi X "+x+" Y "+y+" value "+sudoku[x][y]);
 				sudoku[x][y] = 0;
 				i++;
 			}
 		}
 		return sudoku;
 	}
-	
+
+	public List<Integer> getPosisiX() {
+		return posisiX;
+	}
+
+	public List<Integer> getPosisiY() {
+		return posisiY;
+	}
+
+	public List<Integer> getValueXY() {
+		return valueXY;
+	}
+
 	private void clearGrid(int [][] sudoku) {
 		availableNumber.clear();
 		

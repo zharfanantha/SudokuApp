@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-	Button start, solveMe;
+	Button easy, med, hard, solveMe;
 	TextView timer;
 	boolean isStarted = false;
 	private long startTime = 0L;
@@ -24,19 +24,32 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		start = findViewById(R.id.startBtn);
+		easy = findViewById(R.id.easyBtn);
+		med = findViewById(R.id.mediumBtn);
+		hard = findViewById(R.id.hardBtn);
 		solveMe =  findViewById(R.id.solveMeBtn);
 		timer = findViewById(R.id.timer);
 
 		GameEngine.getInstance().createEmptyGrid(this);
 
-		start.setOnClickListener(new View.OnClickListener() {
+		easy.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				isStarted = true;
-				GameEngine.getInstance().createGrid();
-				startTime = SystemClock.uptimeMillis();
-				customHandler.postDelayed(updateTimerThread, 0);
+				startGame("easy");
+			}
+		});
+
+		med.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				startGame("med");
+			}
+		});
+
+		hard.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				startGame("hard");
 			}
 		});
 
@@ -44,12 +57,22 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				if (!isStarted) {
-					Toast.makeText(MainActivity.this, "Anda belum memulai permainan", Toast.LENGTH_SHORT).show();
+					Toast.makeText(MainActivity.this,
+							"Anda belum memulai permainan", Toast.LENGTH_SHORT).show();
 				} else {
-					SudokuChecker.getInstance().autoSolver(GameEngine.getInstance().getSudokuOutside());
+					SudokuChecker.getInstance().autoSolver(SudokuGenerator.getInstance().getPosisiX(),
+																SudokuGenerator.getInstance().getPosisiY(),
+																SudokuGenerator.getInstance().getValueXY());
 				}
 			}
 		});
+	}
+
+	private void startGame(String level) {
+		isStarted = true;
+		GameEngine.getInstance().createGrid(level);
+		startTime = SystemClock.uptimeMillis();
+		customHandler.postDelayed(updateTimerThread, 0);
 	}
 
 	private Runnable updateTimerThread = new Runnable() {
